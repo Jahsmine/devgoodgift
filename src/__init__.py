@@ -28,7 +28,7 @@ from src.configurations import DevelopmentConfig, ProductionConfig, TestingConfi
 
 def create_app(config_class='configurations.py'):
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(ProductionConfig)
     jwt.init_app(app)
     api = Api(app)
     db.init_app(app)
