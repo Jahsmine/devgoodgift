@@ -1,7 +1,7 @@
 import datetime
 import hashlib
 import traceback
-from flask import request, redirect, url_for
+from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import (
     jwt_required,
@@ -14,7 +14,7 @@ from flask_jwt_extended import (
 from src.extensions import b_crypt, BLACKLIST
 from src.models.user import UserModel
 from src.models.confirmation import ConfirmationModel
-from libs.mail.mailgun import MailGunException, MailGun
+from libs.mail.mailgun import MailGunException
 from libs.serving import response_quote
 from libs.f2auth.email_f2auth import EmailSecondFA
 
@@ -75,7 +75,7 @@ class UserLogin(Resource):
             if confirmation and confirmation.confirmed:
                 access_token = create_access_token(identity=user.sha_private, expires_delta=EXPIRES_DELTA)
                 refresh_token = create_refresh_token(identity=user.sha_private)
-                if user.second_fa_enabled:  # TODO: MAKE ENABLED!
+                if user.second_fa_enabled:
                     try:
                         token = hashlib.sha256(str.encode(user.sha_private)).hexdigest()
                         code = EmailSecondFA.generate_2fa_code(token)  # еще подумать над этим функционалом

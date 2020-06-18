@@ -1,6 +1,7 @@
 import logging
 from flask import Flask
 from flask_restful import Api
+from flask_migrate import Migrate
 from logging.handlers import WatchedFileHandler
 from .extensions import (
     db,
@@ -34,6 +35,7 @@ def create_app(config_class='configurations.py'):
     app.cli.add_command(create_tables)  # To interact with app from CLI
     b_crypt.init_app(app)
     ma.init_app(app)
+    migrate = Migrate(app, db)
 
     # USER API
     api.add_resource(UserRegister, '/users/register')

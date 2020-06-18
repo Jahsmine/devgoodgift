@@ -43,3 +43,9 @@ class EmailSecondFA:
     @classmethod
     def token_expiration_delta(cls):
         return cls.__EXPIRES_DELTA
+
+    @classmethod
+    def force_revoke_2fa_code(cls, token: str) -> None:
+        identity_2fa = cls.__fa2_email_dict.get(token)
+        if identity_2fa:
+            del cls.__fa2_email_dict[token]
