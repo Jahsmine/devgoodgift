@@ -1,7 +1,7 @@
 from src import create_app
-from src.extensions import db, jwt, BLACKLIST
+from src.extensions import db
 from libs.serving import set_localization
-from flask_jwt_extended import create_access_token
+
 
 app = create_app()
 
