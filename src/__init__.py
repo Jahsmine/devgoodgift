@@ -1,17 +1,19 @@
+import os
 import logging
 from flask import Flask
 from flask_restful import Api
 from flask_migrate import Migrate
 from logging.handlers import WatchedFileHandler
-from .extensions import (
+from src.extensions import (
     db,
     jwt,
     ma,
     b_crypt,
-    BLACKLIST
+    BLACKLIST,
+    oauth
 )
-from .commands import create_tables
-from .resources.user import (
+from src.commands import create_tables
+from src.resources.user import (
     UserRegister,
     UserList,
     UserLogin,
@@ -21,14 +23,20 @@ from .resources.user import (
     TokenRefresher,
     UserEmail2FA
 )
-from .resources.confirmation import Confirmation
-from .resources.posts import CreatePost
+from src.resources.oauth import (
+    GithubLogin,
+    GithubAuthorize
+)
+from src.resources.confirmation import Confirmation
+from src.resources.posts import CreatePost
 from src.configurations import DevelopmentConfig, ProductionConfig, TestingConfig
+from dotenv import load_dotenv
 
 
 def create_app(config_class='configurations.py'):
     app = Flask(__name__)
     app.config.from_object(ProductionConfig)
+    load_dotenv()
     jwt.init_app(app)
     api = Api(app)
     db.init_app(app)
@@ -36,6 +44,7 @@ def create_app(config_class='configurations.py'):
     b_crypt.init_app(app)
     ma.init_app(app)
     migrate = Migrate(app, db)
+    oauth.init_app(app)
 
     # USER API
     api.add_resource(UserRegister, '/users/register')
@@ -45,6 +54,10 @@ def create_app(config_class='configurations.py'):
     api.add_resource(UserList, '/users/<int:limit>')
     api.add_resource(TokenRefresher, '/users/refreshing')
     api.add_resource(UserEmail2FA, '/users/fa2_auth/<string:token>')
+
+    # OAuth API
+    api.add_resource(GithubLogin, "/login/oauth/github")
+    api.add_resource(GithubAuthorize, "/login/oauth/github/authorized")
 
     # CONFIRMATION API
     api.add_resource(Confirmation, '/user_id/<string:confirmation_id>')

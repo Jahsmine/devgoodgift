@@ -96,10 +96,11 @@ class UserLogout(Resource):
     @classmethod
     @jwt_required
     def post(cls):
+        # TODO: NOT PERFECT
         jti = get_raw_jwt()["jti"]
-        user_id = get_jwt_identity()
+        username = UserModel.find_by_sha_token(get_jwt_identity()).username
         BLACKLIST.add(jti)
-        return {"message": response_quote("user_logged_out").format(user_id)}, 200
+        return {"message": response_quote("user_logged_out").format(username)}, 200
 
 
 class TokenRefresher(Resource):

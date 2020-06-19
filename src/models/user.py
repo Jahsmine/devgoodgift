@@ -12,7 +12,7 @@ class UserModel(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False, index=True)
+    username = db.Column(db.String(80), nullable=False, unique=True, index=True)
     name = db.Column(db.String(80))
     surname = db.Column(db.String(80))
     profile_pic = db.Column(db.String(64), nullable=False, default="gg_default_profile_pic.png")
@@ -51,12 +51,16 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_username(cls, username: str) -> "UserModel":
-        return cls.query.filter_by(username=username).fisrt()
+        return cls.query.filter_by(username=username).first()
 
     @classmethod
     # TODO: TESTING VERSION MAYBE
     def find_by_token_2fa(cls, token: str) -> "UserModel":
         return cls.query.filter_by(token_2fa=token).first()
+
+    @classmethod
+    def find_by_sha_token(cls, token: str) -> "UserModel":
+        return cls.query.filter_by(sha_private=token).first()
 
     @classmethod
     def find_by_locality(cls, locality: str):
