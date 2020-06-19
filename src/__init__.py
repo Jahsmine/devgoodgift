@@ -10,7 +10,7 @@ from src.extensions import (
     ma,
     b_crypt,
     BLACKLIST,
-    oauth
+    # oauth
 )
 from src.commands import create_tables
 from src.resources.user import (
@@ -23,10 +23,10 @@ from src.resources.user import (
     TokenRefresher,
     UserEmail2FA
 )
-from src.resources.oauth import (
-    GithubLogin,
-    GithubAuthorize
-)
+# from src.resources.oauth import (
+#     GithubLogin,
+#     GithubAuthorize
+# )
 from src.resources.confirmation import Confirmation
 from src.resources.posts import CreatePost
 from src.configurations import DevelopmentConfig, ProductionConfig, TestingConfig
@@ -44,7 +44,7 @@ def create_app(config_class='configurations.py'):
     b_crypt.init_app(app)
     ma.init_app(app)
     migrate = Migrate(app, db)
-    oauth.init_app(app)
+    # oauth.init_app(app)
 
     # USER API
     api.add_resource(UserRegister, '/users/register')
@@ -56,8 +56,8 @@ def create_app(config_class='configurations.py'):
     api.add_resource(UserEmail2FA, '/users/fa2_auth/<string:token>')
 
     # OAuth API
-    api.add_resource(GithubLogin, "/login/oauth/github")
-    api.add_resource(GithubAuthorize, "/login/oauth/github/authorized")
+    # api.add_resource(GithubLogin, "/login/oauth/github")
+    # api.add_resource(GithubAuthorize, "/login/oauth/github/authorized")
 
     # CONFIRMATION API
     api.add_resource(Confirmation, '/user_id/<string:confirmation_id>')
